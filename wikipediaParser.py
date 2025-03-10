@@ -67,12 +67,13 @@ while True:
     print('\n'+idx+'. '+h2_titles[int(idx)].text+":\n")
 
     while True:
-        tmp = tmp.find_next(["p","ul","h2"])
+        tmp = tmp.find_next(["p","ul","h4","h3","h2"])
         if tmp==previous_p:
             break
         tmp_str = tmp.get_text().strip().replace('\n', ' ')
         
         reg_ppattern = r'\[\d+\]'
-        cleaned_pragraph= re.sub(reg_ppattern,'',tmp_str)
-        text += cleaned_pragraph + '. '
+        cleaned_paragraph= re.sub(reg_ppattern,'',tmp_str)
+        end = ' ' if (cleaned_paragraph[-1]=='.') else '. '
+        text += cleaned_paragraph + end
     print(text)
