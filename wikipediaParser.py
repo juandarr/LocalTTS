@@ -74,5 +74,5 @@ while True:
         
         reg_ppattern = r'\[\d+\]'
         cleaned_pragraph= re.sub(reg_ppattern,'',tmp_str)
-        text += cleaned_pragraph
+        text += cleaned_pragraph + '. '
     print(text)
