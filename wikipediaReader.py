@@ -10,6 +10,10 @@ import sounddevice as sd
 from kokoro_onnx import Kokoro
 import asyncio
 
+# Removes warning logs
+import onnxruntime as ort
+ort.set_default_logger_severity(3)
+
 async def main(txt: str):
     print("Loading model...")
     kokoro = Kokoro("kokoro-v1.0.onnx", "voices-v1.0.bin")
