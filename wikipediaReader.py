@@ -38,8 +38,10 @@ url_base = 'https://en.wikipedia.org/wiki/'
 
 success = False
 while True:
-    topic = input('Which topic would you like to look for? ')
-
+    topic = input('\nWhich topic would you like to look for?[q:quit] ')
+    if topic=='q':
+        print("Have a nice day, human!")
+        break
     start_time = time.time()
     topic = topic.split()
     for idx,word in enumerate(topic):
@@ -66,16 +68,17 @@ while True:
         h2_titles[0]=h1_title[0]
 
         while True:
-            print(f"\n{h1_title[0].text}")
-            print("\nWhich chapter would you like to read: ")
+            print(f"\n{h1_title[0].text}\n")
             for idx, title in enumerate(h2_titles):
                 print(str(idx)+'. ', 'Summary' if idx==0 else title.text)
+            next_topic = False
             while True:
-                idx = input('Which header do you want to read?[q:quit,n:another topic] ')
+                idx = input('\nWhich chapter would you like to read?[q:quit,n:another topic] ')
                 if idx=='q':
                     out = True
                     break
                 elif idx=='n':
+                    next_topic = True
                     break
                 elif re.match(r'^\d+$',idx)!=None:
                     if len(h2_titles) > int(idx) and int(idx)>=0:
@@ -84,7 +87,7 @@ while True:
                         print("Wrong value, try again\n")
                 else:
                     print("Wrong value, try again\n")
-            if out:
+            if out or next_topic:
                 break
             s = h2_titles[int(idx)]
 
