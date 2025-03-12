@@ -15,22 +15,22 @@ import onnxruntime as ort
 ort.set_default_logger_severity(3)
 
 async def main(txt: str):
-    print("Loading model...")
+    print("\nLoading model...")
     kokoro = Kokoro("kokoro-v1.0.onnx", "voices-v1.0.bin")
     print("Model loaded")
     print("Creating stream...")
     stream = kokoro.create_stream(
         txt,
-        voice="af_sky",
+        voice="af_bella",
         speed=1.0,
         lang="en-us",
     )
 
     count = 0
-
+    print(f"Playing audio stream ...")
     async for samples, sample_rate in stream:
         count += 1
-        print(f"Playing audio stream ({count})...")
+        print(f"               stream ({count})...")
         sd.play(samples, sample_rate)
         sd.wait()
 
@@ -59,13 +59,16 @@ while True:
         break
 soup = BeautifulSoup(response.text, 'html.parser')
 
+# Extract title with header h1
+h1_title = soup.find_all('h1')
 # Extract all titles defined with header h2
 h2_titles = soup.find_all('h2')
+h2_titles[0]=h1_title[0]
 
 while True:
     print("\nWhich topic would you like to read: ")
     for idx, title in enumerate(h2_titles):
-        if idx==0: continue
+        #if idx==0: continue
         print(str(idx)+'. ', title.text)
     out = False
     while True:
@@ -95,14 +98,18 @@ while True:
     print('\n'+idx+'. '+h2_titles[int(idx)].text+":\n")
 
     while True:
-        tmp = tmp.find_next(["p","ul","h4","h3","h2"])
+        filters = ["p","h4","h3","h2"]
+        if int(idx)!=0:
+            filter.append("ul")
+        tmp = tmp.find_next(filters)
+        
         if tmp==previous_p:
             break
         tmp_str = tmp.get_text().strip().replace('\n', ' ')
 
         reg_ppattern = r'\[\d+\]'
         cleaned_paragraph= re.sub(reg_ppattern,'',tmp_str)
-        end = ' ' if (cleaned_paragraph[-1]=='.') else '. '
+        end = ' ' if (len(cleaned_paragraph)==0 or (cleaned_paragraph[-1]=='.')) else '. '
         text += cleaned_paragraph + end
     print(text)
 
