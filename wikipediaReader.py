@@ -55,62 +55,65 @@ while True:
         success =True
     else:
         print("Unable to find the topic, try again\n")
-    if success:
-        break
-soup = BeautifulSoup(response.text, 'html.parser')
-
-# Extract title with header h1
-h1_title = soup.find_all('h1')
-# Extract all titles defined with header h2
-h2_titles = soup.find_all('h2')
-h2_titles[0]=h1_title[0]
-
-while True:
-    print(f"\n{h1_title[0].text}")
-    print("\nWhich topic would you like to read: ")
-    for idx, title in enumerate(h2_titles):
-        print(str(idx)+'. ', 'Summary' if idx==0 else title.text)
     out = False
-    while True:
-        idx = input('Which header do you want to read?(q+enter to quit) ')
-        if idx=='q':
-            print("Have a nice day, human!")
-            out = True
-            break
-        elif re.match(r'^\d+$',idx)!=None:
-            if len(h2_titles) > int(idx) and int(idx)>=0:
+    if success:
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Extract title with header h1
+        h1_title = soup.find_all('h1')
+        # Extract all titles defined with header h2
+        h2_titles = soup.find_all('h2')
+        h2_titles[0]=h1_title[0]
+
+        while True:
+            print(f"\n{h1_title[0].text}")
+            print("\nWhich chapter would you like to read: ")
+            for idx, title in enumerate(h2_titles):
+                print(str(idx)+'. ', 'Summary' if idx==0 else title.text)
+            while True:
+                idx = input('Which header do you want to read?[q:quit,n:another topic] ')
+                if idx=='q':
+                    out = True
+                    break
+                elif idx=='n':
+                    break
+                elif re.match(r'^\d+$',idx)!=None:
+                    if len(h2_titles) > int(idx) and int(idx)>=0:
+                        break
+                    else:
+                        print("Wrong value, try again\n")
+                else:
+                    print("Wrong value, try again\n")
+            if out:
                 break
+            s = h2_titles[int(idx)]
+
+            text = ''
+            tmp  = s
+            if int(idx)==len(h2_titles)-1:
+                next_h2 = None
             else:
-                print("Wrong value, try again\n")
-        else:
-            print("Wrong value, try again\n")
+                next_h2 = h2_titles[int(idx)+1]
+
+            print('\n'+idx+'. '+h2_titles[int(idx)].text+":\n")
+
+            while True:
+                filters = ["p","h4","h3","h2"]
+                if int(idx)!=0:
+                    filters.append("ul")
+                tmp = tmp.find_next(filters)
+                
+                if tmp==next_h2:
+                    break
+                tmp_str = tmp.get_text().strip().replace('\n', ' ')
+
+                reg_ppattern = r'\[\d+\]'
+                cleaned_paragraph= re.sub(reg_ppattern,'',tmp_str)
+                end = ' ' if (len(cleaned_paragraph)==0 or (cleaned_paragraph[-1]=='.')) else '. '
+                text += cleaned_paragraph + end
+            print(text)
+
+            asyncio.run(main(text))
     if out:
+        print("Have a nice day, human!")
         break
-    s = h2_titles[int(idx)]
-
-    text = ''
-    tmp  = s
-    if int(idx)==len(h2_titles)-1:
-        next_h2 = None
-    else:
-        next_h2 = h2_titles[int(idx)+1]
-
-    print('\n'+idx+'. '+h2_titles[int(idx)].text+":\n")
-
-    while True:
-        filters = ["p","h4","h3","h2"]
-        if int(idx)!=0:
-            filter.append("ul")
-        tmp = tmp.find_next(filters)
-        
-        if tmp==next_h2:
-            break
-        tmp_str = tmp.get_text().strip().replace('\n', ' ')
-
-        reg_ppattern = r'\[\d+\]'
-        cleaned_paragraph= re.sub(reg_ppattern,'',tmp_str)
-        end = ' ' if (len(cleaned_paragraph)==0 or (cleaned_paragraph[-1]=='.')) else '. '
-        text += cleaned_paragraph + end
-    print(text)
-
-    asyncio.run(main(text))
