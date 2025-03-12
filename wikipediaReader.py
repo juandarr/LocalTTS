@@ -66,10 +66,10 @@ h2_titles = soup.find_all('h2')
 h2_titles[0]=h1_title[0]
 
 while True:
+    print(f"\n{h1_title[0].text}")
     print("\nWhich topic would you like to read: ")
     for idx, title in enumerate(h2_titles):
-        #if idx==0: continue
-        print(str(idx)+'. ', title.text)
+        print(str(idx)+'. ', 'Summary' if idx==0 else title.text)
     out = False
     while True:
         idx = input('Which header do you want to read?(q+enter to quit) ')
@@ -91,9 +91,9 @@ while True:
     text = ''
     tmp  = s
     if int(idx)==len(h2_titles)-1:
-        previous_p = None
+        next_h2 = None
     else:
-        previous_p = h2_titles[int(idx)+1]
+        next_h2 = h2_titles[int(idx)+1]
 
     print('\n'+idx+'. '+h2_titles[int(idx)].text+":\n")
 
@@ -103,7 +103,7 @@ while True:
             filter.append("ul")
         tmp = tmp.find_next(filters)
         
-        if tmp==previous_p:
+        if tmp==next_h2:
             break
         tmp_str = tmp.get_text().strip().replace('\n', ' ')
 
