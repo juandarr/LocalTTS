@@ -130,7 +130,6 @@ def main(language):
 
 if __name__ == '__main__':
     args = sys.argv[1:]
-    print(args)
     language = 'en'
     if len(args)==2:
         if args[0]=='-l':
@@ -138,7 +137,7 @@ if __name__ == '__main__':
                 language = args[1]
                 main(language)
             else:
-                print("Wrong argument, possible languages are 'es' and 'en'")
+                print("Wrong argument, possible languages are 'es'[Spanish] and 'en'[English]")
         else:
             print("Wrong argument, should be '-l'")
     else:
