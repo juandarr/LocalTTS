@@ -15,6 +15,10 @@ import asyncio
 import onnxruntime as ort
 ort.set_default_logger_severity(3)
 
+'''
+reader function
+Loads model, defines voices, language and play audio, define speech in batches
+'''
 async def reader(txt: str, voice: str, lang: str):
     print("\nLoading model...")
     kokoro = Kokoro("kokoro-v1.0.onnx", "voices-v1.0.bin")
@@ -35,6 +39,10 @@ async def reader(txt: str, voice: str, lang: str):
         sd.play(samples, sample_rate)
         sd.wait()
 
+'''
+main function
+This function parses and extracts text from wikipedia and send it to the reader function
+'''
 def main(language):
     url_base = 'https://en.wikipedia.org/wiki/'
     if language=='es':
